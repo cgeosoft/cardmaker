@@ -17,10 +17,6 @@ export class MainComponent implements OnInit {
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
   BB: any;
-  offsetX;
-  offsetY;
-  WIDTH;
-  HEIGHT;
   config = {};
   dataset = [{
     text1: 'lorem'
@@ -28,9 +24,23 @@ export class MainComponent implements OnInit {
     text1: 'ispum'
   }];
 
-  docDefinition = {
-    content: 'This is an sample PDF printed with pdfMake'
+  template = {
+    width: 63.5,
+    height: 88.9,
+    bgColor: 'green',
+    showSafeBox: true,
   };
+
+  datasetStr;
+
+  dpr = window.devicePixelRatio || 1;
+  bsr;
+
+  docDefinition = {
+    content: []
+  };
+
+  previewIndex = 0;
 
   constructor() { }
 
@@ -38,23 +48,37 @@ export class MainComponent implements OnInit {
   ngOnInit() {
     this.canvas = this.canvasRef.nativeElement as HTMLCanvasElement;
     this.ctx = this.canvas.getContext('2d');
+    this.ctx.scale(this.dpr, this.dpr);
     this.BB = this.canvas.getBoundingClientRect();
-    this.offsetX = this.BB.left;
-    this.offsetY = this.BB.top;
-    this.WIDTH = this.canvas.width;
-    this.HEIGHT = this.canvas.height;
+    this.datasetStr = JSON.stringify(this.dataset);
+
+    this.canvas.height = this.template.height * 20;
+    this.canvas.width = this.template.width * 20;
+
+    setTimeout(() => {
+      this.preview();
+
+    }, 1 * 1000);
+  }
+
+  preview() {
+    const card = this.dataset[this.previewIndex];
+    this.draw(card);
   }
 
   generate() {
-
+    this.docDefinition.content = [];
     this.dataset.forEach((d, i) => {
       const data = this.draw(d);
+      this.docDefinition.content.push({
+        image: data, width: 200
+      });
       const x = document.createElement('IMG');
       // x.src = data;
       document.body.appendChild(x);
 
-      const k = document.createElement('div');
-      k.innerHTML = data;
+      // const k = document.createElement('div');
+      // k.innerHTML = data;
       // document.body.appendChild(k)
     });
 
@@ -67,8 +91,8 @@ export class MainComponent implements OnInit {
   ngOnAfterViewInit(): void {
   }
 
-  clear() {
-    this.ctx.clearRect(0, 0, this.WIDTH, this.HEIGHT);
+  parseData() {
+    this.dataset = JSON.parse(this.datasetStr);
   }
 
   rect(x, y, w, h) {
@@ -79,14 +103,31 @@ export class MainComponent implements OnInit {
   }
 
   draw(card) {
-    this.clear();
-    this.ctx.fillStyle = 'red';
-    this.rect(0, 0, this.WIDTH, this.HEIGHT);
-    this.ctx.fillStyle = 'white';
+    this.ctx.fillStyle = this.template.bgColor || 'white';
+    this.rect(0, 0, this.getPixelFromMM(this.template.width), this.getPixelFromMM(this.template.height));
 
+    if (this.template.showSafeBox) {
+      this.ctx.beginPath();
+      this.ctx.rect(
+        this.getPixelFromMM(5),
+        this.getPixelFromMM(5),
+        this.getPixelFromMM(this.template.width - 10),
+        this.getPixelFromMM(this.template.height - 10),
+      );
+      this.ctx.closePath();
+      this.ctx.strokeStyle = 'black';
+      this.ctx.lineWidth = 1;
+      this.ctx.stroke();
+    }
+
+    this.ctx.fillStyle = 'black';
     this.ctx.textAlign = 'center';
     this.ctx.fillText(card.text1, this.canvas.width / 2, this.canvas.height / 2);
     return this.canvas.toDataURL();
+  }
+
+  getPixelFromMM(mm: number) {
+    return mm * 72 * 0.0393701 * this.dpr;
   }
 
 }
