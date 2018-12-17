@@ -1,8 +1,12 @@
+import { Project } from './../models/all';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 
 import * as pdfMake from 'pdfmake/build/pdfmake.js';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
+import * as projectJson from '../../data/classic-cards.json';
+
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
+
 
 @Component({
   selector: 'app-main',
@@ -53,6 +57,8 @@ export class MainComponent implements OnInit {
 
   previewIndex = 0;
 
+  project: Project;
+
   constructor() { }
 
 
@@ -66,6 +72,7 @@ export class MainComponent implements OnInit {
     this.canvas.height = this.template.height * 20;
     this.canvas.width = this.template.width * 20;
 
+    this.project = projectJson as Project;
     setTimeout(() => {
       this.preview();
       this.generate();

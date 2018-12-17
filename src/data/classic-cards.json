@@ -1,6 +1,6 @@
 {
   "name": "Classic Cards",
-  "data": "2018-12-17",
+  "date": "2018-12-17",
   "decks": [{
     "name": "Hearts suit",
     "width": 63,
@@ -79,7 +79,7 @@
       "type": 1,
       "content": {
         "file": "back-blue.png",
-        "position": "repeat"
+        "position": 11
       },
       "position": {
         "left": 4,
