@@ -1,6 +1,9 @@
 {
   "name": "Classic Cards",
   "date": "2018-12-17",
+  "print": {
+    "dpi": 72
+  },
   "decks": [{
     "name": "Hearts suit",
     "width": 63,

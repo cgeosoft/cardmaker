@@ -1,4 +1,4 @@
-import { Project } from './../models/all';
+import { Project, Deck } from './../models/all';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 
 import * as pdfMake from 'pdfmake/build/pdfmake.js';
@@ -20,79 +20,55 @@ export class MainComponent implements OnInit {
 
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
-  BB: any;
-  config = {};
-  dataset = [{
-    text1: 'lorem'
-  }, {
-    text1: 'sit'
-  }, {
-    text1: 'amet'
-  }, {
-    text1: 'ipsum'
-  }, {
-    text1: 'lorem2'
-  }, {
-    text1: 'sit2'
-  }, {
-    text1: 'amet2'
-  }, {
-    text1: 'ipsum2'
-  }];
 
   activeView = 'TEMPLATE';
 
-  template = {
-    dpi: 72,
-    width: 63.5,
-    height: 88.9,
-    bgColor: 'lightgrey',
-    showSafeBox: true,
-  };
+  showSafeBox = true;
 
-  datasetStr;
-
-  dpr = window.devicePixelRatio || 1;
-  bsr;
+  dataStr: string = null;
 
   previewIndex = 0;
 
   project: Project;
 
+  deck: Deck = null;
+
   constructor() { }
 
-
   ngOnInit() {
-    this.canvas = this.canvasRef.nativeElement as HTMLCanvasElement;
-    this.ctx = this.canvas.getContext('2d');
-    this.ctx.scale(this.dpr, this.dpr);
-    this.BB = this.canvas.getBoundingClientRect();
-    this.datasetStr = JSON.stringify(this.dataset);
 
-    this.canvas.height = this.template.height * 20;
-    this.canvas.width = this.template.width * 20;
+    this.project = projectJson['default'];
+    this.deck = this.project.decks[0];
 
-    this.project = projectJson as Project;
     setTimeout(() => {
-      this.preview();
-      this.generate();
+
+      this.canvas = this.canvasRef.nativeElement as HTMLCanvasElement;
+      this.ctx = this.canvas.getContext('2d');
+
+      this.canvas.height = this.getPixelFromMM(this.deck.height);
+      this.canvas.width = this.getPixelFromMM(this.deck.width);
+
+      this.dataStr = JSON.stringify(this.deck.data, [''], 2);
+      this.generatePdf();
+      this.previewCard();
+
     }, 1 * 1000);
   }
 
-  preview() {
-    const card = this.dataset[this.previewIndex];
+  previewCard() {
+    const card = this.deck.data[this.previewIndex];
     this.draw(card);
   }
 
-  generate() {
+  generatePdf() {
     const cards = [];
-    const showSafeBox = this.template.showSafeBox;
-    this.template.showSafeBox = false;
-    this.dataset.forEach((d, i) => {
+    const showSafeBox = this.showSafeBox;
+    this.showSafeBox = false;
+    this.deck.data.forEach((d, i) => {
       const data = this.draw(d);
       cards.push(data);
     });
-    this.template.showSafeBox = showSafeBox;
+    this.showSafeBox = showSafeBox;
 
     const docDefinition = this.getDocDefinition(cards);
     const pdfDocGenerator = pdfMake.createPdf(docDefinition);
@@ -159,7 +135,7 @@ export class MainComponent implements OnInit {
   }
 
   parseData() {
-    this.dataset = JSON.parse(this.datasetStr);
+    this.deck.data = JSON.parse(this.dataStr);
   }
 
   rect(x, y, w, h) {
@@ -170,16 +146,16 @@ export class MainComponent implements OnInit {
   }
 
   draw(card) {
-    this.ctx.fillStyle = this.template.bgColor || 'white';
-    this.rect(0, 0, this.getPixelFromMM(this.template.width), this.getPixelFromMM(this.template.height));
+    this.ctx.fillStyle = this.deck.background || 'white';
+    this.rect(0, 0, this.getPixelFromMM(this.deck.width), this.getPixelFromMM(this.deck.height));
 
-    if (this.template.showSafeBox) {
+    if (this.showSafeBox) {
       this.ctx.beginPath();
       this.ctx.rect(
         this.getPixelFromMM(5),
         this.getPixelFromMM(5),
-        this.getPixelFromMM(this.template.width - 10),
-        this.getPixelFromMM(this.template.height - 10),
+        this.getPixelFromMM(this.deck.width - 10),
+        this.getPixelFromMM(this.deck.height - 10),
       );
       this.ctx.closePath();
       this.ctx.strokeStyle = 'black';
@@ -190,12 +166,12 @@ export class MainComponent implements OnInit {
     this.ctx.fillStyle = 'black';
     this.ctx.textAlign = 'center';
     this.ctx.font = '20px arial';
-    this.ctx.fillText(card.text1, this.canvas.width / 2, this.canvas.height / 2);
+    this.ctx.fillText(card.symbol, this.canvas.width / 2, this.canvas.height / 2);
     return this.canvas.toDataURL();
   }
 
   getPixelFromMM(mm: number) {
-    return mm * 0.0393701 * this.template.dpi * this.dpr;
+    return mm * 0.0393701 * this.project.print.dpi;
   }
 
 }

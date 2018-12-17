@@ -1,79 +1,89 @@
-<div class="wrapper d-flex flex-column">
+<ng-container *ngIf="deck">
 
-  <div class="d-flex align-item-center justify-content-center p-2 border-bottom" style="min-height: 60px;">
-    <div class="btn-group btn-sm">
-      <button type="button" class="btn btn-outline-secondary" [ngClass]="{active:activeView==='TEMPLATE'}" (click)="activeView='TEMPLATE'">Template</button>
-      <button type="button" class="btn btn-outline-secondary" [ngClass]="{active:activeView==='DATASET'}" (click)="activeView='DATASET'">Dataset</button>
-      <button type="button" class="btn btn-outline-secondary" [ngClass]="{active:activeView==='PDF'}" (click)="activeView='PDF'">PDF</button>
+  <div class="wrapper d-flex flex-column">
+
+    <div class="d-flex align-item-center justify-content-center p-2 border-bottom" style="min-height: 60px;">
+      <div class="btn-group btn-sm">
+        <button type="button" class="btn btn-outline-secondary" [ngClass]="{active:activeView==='TEMPLATE'}" (click)="activeView='TEMPLATE'">Template</button>
+        <button type="button" class="btn btn-outline-secondary" [ngClass]="{active:activeView==='DATASET'}" (click)="activeView='DATASET'">Dataset</button>
+        <button type="button" class="btn btn-outline-secondary" [ngClass]="{active:activeView==='PDF'}" (click)="activeView='PDF'">PDF</button>
+      </div>
     </div>
-  </div>
 
-  <div class="panel" [hidden]="activeView!=='TEMPLATE'">
-    <div class="d-flex w-100 h-100">
-      <div class="w-100">
-        <div class="p-3">
-          <div>
-            devicePixelRatio: {{dpr}}
-          </div>
-          <div class="row">
-            <div class="col-6">
-              <div class="form-group">
-                <label>Width</label>
-                <div class="input-group">
-                  <input type="text" class="form-control" [(ngModel)]="template.width" (keyup)="preview()">
-                  <div class="input-group-append">
-                    <span class="input-group-text">mm</span>
+    <div class="panel" [hidden]="activeView!=='TEMPLATE'">
+      <div class="d-flex w-100 h-100">
+        <div class="w-100">
+          <div class="p-3">
+            <div>
+              devicePixelRatio: {{dpr}}
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <div class="form-group">
+                  <label>Width</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" [(ngModel)]="deck.width" (keyup)="previewCard()">
+                    <div class="input-group-append">
+                      <span class="input-group-text">mm</span>
+                    </div>
                   </div>
+                  <small class="form-text text-muted">{{(deck.width * 0.0393701).toFixed(2)}}"</small>
                 </div>
-                <small class="form-text text-muted">{{(template.width * 0.0393701).toFixed(2)}}"</small>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label>Height</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" [(ngModel)]="deck.height" (keyup)="previewCard()">
+                    <div class="input-group-append">
+                      <span class="input-group-text">mm</span>
+                    </div>
+                  </div>
+                  <small class="form-text text-muted">{{(deck.height * 0.0393701).toFixed(2)}}"</small>
+
+                </div>
               </div>
             </div>
-            <div class="col-6">
-              <div class="form-group">
-                <label>Height</label>
-                <div class="input-group">
-                  <input type="text" class="form-control" [(ngModel)]="template.height" (keyup)="preview()">
-                  <div class="input-group-append">
-                    <span class="input-group-text">mm</span>
-                  </div>
-                </div>
-                <small class="form-text text-muted">{{(template.height * 0.0393701).toFixed(2)}}"</small>
-
-              </div>
+            <div class="form-check">
+              <label class="form-check-label">
+                <input type="checkbox" class="form-check-input" [(ngModel)]="showSafeBox" (keyup)="previewCard()">
+                Show safe-box
+              </label>
+            </div>
+            <div class="form-group">
+              <label for="">DPI</label>
+              <input type="text" class="form-control" [(ngModel)]="project.print.dpi" (keyup)="previewCard()">
+              <small class="form-text text-muted">PDF Default is : 72</small>
+            </div>
+            <div class="form-group">
+              <label for="">Background Color</label>
+              <input type="text" class="form-control" [(ngModel)]="deck.background" (keyup)="previewCard()">
             </div>
           </div>
-          <div class="form-check">
-            <label class="form-check-label">
-              <input type="checkbox" class="form-check-input" [(ngModel)]="template.showSafeBox" (keyup)="preview()">
-              Show safe-box
-            </label>
+        </div>
+        <div class="d-flex flex-column" style="width:400px;">
+          <div class="form-group m-0">
+            <select class="form-control" [(ngModel)]="previewIndex" (change)="previewCard()">
+              <option *ngFor="let dataItem of deck.data; let i = index" [value]="i">Item #{{i+1}}</option>
+            </select>
           </div>
-          <div class="form-group">
-            <label for="">DPI</label>
-            <input type="text" class="form-control" [(ngModel)]="template.dpi" (keyup)="preview()">
-            <small class="form-text text-muted">PDF Default is : 72</small>
-          </div>
-          <div class="form-group">
-            <label for="">Background Color</label>
-            <input type="text" class="form-control" [(ngModel)]="template.bgColor" (keyup)="preview()">
+          <div class="d-flex bg-dark align-items-center justify-content-center w-100 h-100 text-truncate">
+            <canvas #canvas [width]="getPixelFromMM(deck.width)" [height]="getPixelFromMM(deck.height)" class="bg-light"></canvas>
           </div>
         </div>
       </div>
-      <div class="d-flex bg-dark align-items-center justify-content-center p-4 rounded" 
-      style="height:100%; width:400px;min-width:400px;overflow: hidden">
-        <canvas #canvas [width]="getPixelFromMM(template.width)" [height]="getPixelFromMM(template.height)" class="bg-light"></canvas>
-      </div>
     </div>
+
+    <div class="panel" [hidden]="activeView!=='DATASET'">
+      <textarea class="form-control w-100 monospace" [(ngModel)]="dataStr" (change)="parseData()"></textarea>
+    </div>
+
+
+    <div class="panel" [hidden]="activeView!=='PDF'">
+      <button class="btn btn-primary btn-sm" (click)="generatePdf()">Generate</button>
+      <iframe #pdfv src="" frameborder="0" class="bg-light w-100" style="height:500px"></iframe>
+    </div>
+
   </div>
 
-  <div class="panel" [hidden]="activeView!=='DATASET'">
-    <textarea class="form-control w-100 monospace" [(ngModel)]="datasetStr" (change)="parseData()"></textarea>
-  </div>
-
-
-  <div class="panel" [hidden]="activeView!=='PDF'">
-    <button class="btn btn-primary btn-sm" (click)="generate()">Generate</button>
-    <iframe #pdfv src="" frameborder="0" class="bg-light w-100" style="height:500px"></iframe>
-  </div>
-
-</div>
+</ng-container>
