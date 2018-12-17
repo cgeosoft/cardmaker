@@ -18,6 +18,7 @@
                   <span class="input-group-text">mm</span>
                 </div>
               </div>
+              <small class="form-text text-muted">{{(template.width * 0.0393701).toFixed(2)}}"</small>
             </div>
           </div>
           <div class="col-6">
@@ -29,14 +30,21 @@
                   <span class="input-group-text">mm</span>
                 </div>
               </div>
+              <small class="form-text text-muted">{{(template.height * 0.0393701).toFixed(2)}}"</small>
+
             </div>
           </div>
         </div>
         <div class="form-check">
           <label class="form-check-label">
-            <input type="checkbox" class="form-check-input" [(ngModel)]="template.showSafeBox">
+            <input type="checkbox" class="form-check-input" [(ngModel)]="template.showSafeBox" (keyup)="preview()">
             Show safe-box
           </label>
+        </div>
+        <div class="form-group">
+          <label for="">DPI</label>
+          <input type="text" class="form-control" [(ngModel)]="template.dpi" (keyup)="preview()">
+          <small class="form-text text-muted">PDF Default is : 72</small>
         </div>
         <div class="form-group">
           <label for="">Background Color</label>
@@ -50,14 +58,14 @@
   </div>
 </div>
 
-<div class="row h-100">
+<div class="row">
   <div class="col-7">
     <div class="d-flex flex-column p-4">
       <div>
       </div>
-      <div class="h-100">
+      <div class="">
         <h4>Dataset</h4>
-        <textarea class="form-control w-100 h-100 monospace" [(ngModel)]="datasetStr" (change)="parseData()"></textarea>
+        <textarea class="form-control w-100 monospace" [(ngModel)]="datasetStr" (change)="parseData()"></textarea>
       </div>
     </div>
   </div>

@@ -21,13 +21,26 @@ export class MainComponent implements OnInit {
   dataset = [{
     text1: 'lorem'
   }, {
-    text1: 'ispum'
+    text1: 'sit'
+  }, {
+    text1: 'amet'
+  }, {
+    text1: 'ipsum'
+  }, {
+    text1: 'lorem2'
+  }, {
+    text1: 'sit2'
+  }, {
+    text1: 'amet2'
+  }, {
+    text1: 'ipsum2'
   }];
 
   template = {
+    dpi: 72,
     width: 63.5,
     height: 88.9,
-    bgColor: 'green',
+    bgColor: 'lightgrey',
     showSafeBox: true,
   };
 
@@ -35,10 +48,6 @@ export class MainComponent implements OnInit {
 
   dpr = window.devicePixelRatio || 1;
   bsr;
-
-  docDefinition = {
-    content: []
-  };
 
   previewIndex = 0;
 
@@ -57,7 +66,7 @@ export class MainComponent implements OnInit {
 
     setTimeout(() => {
       this.preview();
-
+     this. generate();
     }, 1 * 1000);
   }
 
@@ -67,25 +76,74 @@ export class MainComponent implements OnInit {
   }
 
   generate() {
-    this.docDefinition.content = [];
+    const cards = [];
+    const showSafeBox = this.template.showSafeBox;
+    this.template.showSafeBox = false;
     this.dataset.forEach((d, i) => {
       const data = this.draw(d);
-      this.docDefinition.content.push({
-        image: data, width: 200
-      });
-      const x = document.createElement('IMG');
-      // x.src = data;
-      document.body.appendChild(x);
-
-      // const k = document.createElement('div');
-      // k.innerHTML = data;
-      // document.body.appendChild(k)
+      cards.push(data);
     });
+    this.template.showSafeBox = showSafeBox;
 
-    const pdfDocGenerator = pdfMake.createPdf(this.docDefinition);
+    const docDefinition = this.getDocDefinition(cards);
+    const pdfDocGenerator = pdfMake.createPdf(docDefinition);
     pdfDocGenerator.getDataUrl((dataUrl) => {
       this.pdfv.nativeElement.src = dataUrl;
     });
+  }
+
+  getDocDefinition(cards) {
+    const body = [];
+    for (let i = 0; i < cards.length; i = i + 4) {
+      const row = [];
+
+      row.push({ image: cards[i] });
+
+      if (cards[i + 1]) {
+        row.push({ image: cards[i + 1] || '' });
+      } else {
+        row.push('');
+      }
+
+      if (cards[i + 2]) {
+        row.push({ image: cards[i + 2] || '' });
+      } else {
+        row.push('');
+      }
+
+      if (cards[i + 3]) {
+        row.push({ image: cards[i + 3] || '' });
+      } else {
+        row.push('');
+      }
+
+      body.push(row);
+    }
+
+    const dd = {
+      content: [
+        {
+          table: {
+            body: body
+          },
+          layout: {
+            hLineWidth: function (i, node) { return 0; },
+            vLineWidth: function (i, node) { return 0; },
+            paddingLeft: function(i, node) { return 0; },
+            paddingRight: function(i, node) { return 2; },
+            paddingTop: function(i, node) { return 0; },
+            paddingBottom: function(i, node) { return 2; },
+          }
+        },
+      ],
+      pageSize: 'A4',
+      pageOrientation: 'landscape',
+      pageMargins: [18, 18, 18, 18]
+    };
+
+    console.log(dd);
+
+    return dd;
   }
 
   ngOnAfterViewInit(): void {
@@ -122,12 +180,13 @@ export class MainComponent implements OnInit {
 
     this.ctx.fillStyle = 'black';
     this.ctx.textAlign = 'center';
+    this.ctx.font = '20px arial';
     this.ctx.fillText(card.text1, this.canvas.width / 2, this.canvas.height / 2);
     return this.canvas.toDataURL();
   }
 
   getPixelFromMM(mm: number) {
-    return mm * 72 * 0.0393701 * this.dpr;
+    return mm * 0.0393701 * this.template.dpi * this.dpr;
   }
 
 }
