@@ -1,82 +1,79 @@
-<div class="card m-4">
-  <div class="row">
-    <div class="col-7">
-      <div class="p-3">
+<div class="wrapper d-flex flex-column">
 
-        <h4>Template</h4>
-        <hr>
-        <div>
-          devicePixelRatio: {{dpr}}
-        </div>
-        <div class="row">
-          <div class="col-6">
-            <div class="form-group">
-              <label>Width</label>
-              <div class="input-group">
-                <input type="text" class="form-control" [(ngModel)]="template.width" (keyup)="preview()">
-                <div class="input-group-append">
-                  <span class="input-group-text">mm</span>
+  <div class="d-flex align-item-center justify-content-center p-2 border-bottom" style="min-height: 60px;">
+    <div class="btn-group btn-sm">
+      <button type="button" class="btn btn-outline-secondary" [ngClass]="{active:activeView==='TEMPLATE'}" (click)="activeView='TEMPLATE'">Template</button>
+      <button type="button" class="btn btn-outline-secondary" [ngClass]="{active:activeView==='DATASET'}" (click)="activeView='DATASET'">Dataset</button>
+      <button type="button" class="btn btn-outline-secondary" [ngClass]="{active:activeView==='PDF'}" (click)="activeView='PDF'">PDF</button>
+    </div>
+  </div>
+
+  <div class="panel" [hidden]="activeView!=='TEMPLATE'">
+    <div class="d-flex w-100 h-100">
+      <div class="w-100">
+        <div class="p-3">
+          <div>
+            devicePixelRatio: {{dpr}}
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label>Width</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" [(ngModel)]="template.width" (keyup)="preview()">
+                  <div class="input-group-append">
+                    <span class="input-group-text">mm</span>
+                  </div>
                 </div>
+                <small class="form-text text-muted">{{(template.width * 0.0393701).toFixed(2)}}"</small>
               </div>
-              <small class="form-text text-muted">{{(template.width * 0.0393701).toFixed(2)}}"</small>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label>Height</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" [(ngModel)]="template.height" (keyup)="preview()">
+                  <div class="input-group-append">
+                    <span class="input-group-text">mm</span>
+                  </div>
+                </div>
+                <small class="form-text text-muted">{{(template.height * 0.0393701).toFixed(2)}}"</small>
+
+              </div>
             </div>
           </div>
-          <div class="col-6">
-            <div class="form-group">
-              <label>Height</label>
-              <div class="input-group">
-                <input type="text" class="form-control" [(ngModel)]="template.height" (keyup)="preview()">
-                <div class="input-group-append">
-                  <span class="input-group-text">mm</span>
-                </div>
-              </div>
-              <small class="form-text text-muted">{{(template.height * 0.0393701).toFixed(2)}}"</small>
-
-            </div>
+          <div class="form-check">
+            <label class="form-check-label">
+              <input type="checkbox" class="form-check-input" [(ngModel)]="template.showSafeBox" (keyup)="preview()">
+              Show safe-box
+            </label>
+          </div>
+          <div class="form-group">
+            <label for="">DPI</label>
+            <input type="text" class="form-control" [(ngModel)]="template.dpi" (keyup)="preview()">
+            <small class="form-text text-muted">PDF Default is : 72</small>
+          </div>
+          <div class="form-group">
+            <label for="">Background Color</label>
+            <input type="text" class="form-control" [(ngModel)]="template.bgColor" (keyup)="preview()">
           </div>
         </div>
-        <div class="form-check">
-          <label class="form-check-label">
-            <input type="checkbox" class="form-check-input" [(ngModel)]="template.showSafeBox" (keyup)="preview()">
-            Show safe-box
-          </label>
-        </div>
-        <div class="form-group">
-          <label for="">DPI</label>
-          <input type="text" class="form-control" [(ngModel)]="template.dpi" (keyup)="preview()">
-          <small class="form-text text-muted">PDF Default is : 72</small>
-        </div>
-        <div class="form-group">
-          <label for="">Background Color</label>
-          <input type="text" class="form-control" [(ngModel)]="template.bgColor" (keyup)="preview()">
-        </div>
+      </div>
+      <div class="d-flex bg-dark align-items-center justify-content-center p-4 rounded" 
+      style="height:100%; width:400px;min-width:400px;overflow: hidden">
+        <canvas #canvas [width]="getPixelFromMM(template.width)" [height]="getPixelFromMM(template.height)" class="bg-light"></canvas>
       </div>
     </div>
-    <div class="col-5 bg-dark d-flex align-items-center justify-content-center p-4 rounded" style="height:600px;overflow: hidden">
-      <canvas #canvas [width]="getPixelFromMM(template.width)" [height]="getPixelFromMM(template.height)" class="bg-light"></canvas>
-    </div>
   </div>
-</div>
 
-<div class="row">
-  <div class="col-7">
-    <div class="d-flex flex-column p-4">
-      <div>
-      </div>
-      <div class="">
-        <h4>Dataset</h4>
-        <textarea class="form-control w-100 monospace" [(ngModel)]="datasetStr" (change)="parseData()"></textarea>
-      </div>
-    </div>
+  <div class="panel" [hidden]="activeView!=='DATASET'">
+    <textarea class="form-control w-100 monospace" [(ngModel)]="datasetStr" (change)="parseData()"></textarea>
   </div>
-  <div class="col-5">
-  </div>
-</div>
-<div class="card m-4">
-  <div class="card-body">
-    <h4>PDF</h4>
-    <hr>
+
+
+  <div class="panel" [hidden]="activeView!=='PDF'">
     <button class="btn btn-primary btn-sm" (click)="generate()">Generate</button>
+    <iframe #pdfv src="" frameborder="0" class="bg-light w-100" style="height:500px"></iframe>
   </div>
-  <iframe #pdfv src="" frameborder="0" class="bg-light w-100" style="height:500px"></iframe>
+
 </div>

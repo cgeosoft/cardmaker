@@ -36,6 +36,8 @@ export class MainComponent implements OnInit {
     text1: 'ipsum2'
   }];
 
+  activeView = 'TEMPLATE';
+
   template = {
     dpi: 72,
     width: 63.5,
@@ -66,7 +68,7 @@ export class MainComponent implements OnInit {
 
     setTimeout(() => {
       this.preview();
-     this. generate();
+      this.generate();
     }, 1 * 1000);
   }
 
@@ -129,10 +131,10 @@ export class MainComponent implements OnInit {
           layout: {
             hLineWidth: function (i, node) { return 0; },
             vLineWidth: function (i, node) { return 0; },
-            paddingLeft: function(i, node) { return 0; },
-            paddingRight: function(i, node) { return 2; },
-            paddingTop: function(i, node) { return 0; },
-            paddingBottom: function(i, node) { return 2; },
+            paddingLeft: function (i, node) { return 0; },
+            paddingRight: function (i, node) { return 2; },
+            paddingTop: function (i, node) { return 0; },
+            paddingBottom: function (i, node) { return 2; },
           }
         },
       ],
