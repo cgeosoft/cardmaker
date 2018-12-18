@@ -2,13 +2,13 @@
   "name": "Classic Cards",
   "date": "2018-12-17",
   "print": {
-    "dpi": 72
+    "dpi": 600
   },
   "decks": [{
     "name": "Hearts suit",
     "width": 63,
     "height": 88.5,
-    "background": "white",
+    "background": "lightgrey",
     "front": [{
       "type": 0,
       "content": {
@@ -19,13 +19,17 @@
       },
       "position": {
         "left": 2,
-        "top": 3,
+        "top": 2,
         "width": 6,
         "height": 10,
         "opacity": 1,
         "rotate": 0
       },
-      "border": null,
+      "border": {
+        "style": "solid",
+        "size": 1,
+        "color": "red"
+      },
       "condition": null
     }, {
       "type": 0,
@@ -43,7 +47,11 @@
         "opacity": 1,
         "rotate": 180
       },
-      "border": null,
+      "border": {
+        "style": "solid",
+        "size": 1,
+        "color": "red"
+      },
       "condition": null
     }, {
       "type": 1,

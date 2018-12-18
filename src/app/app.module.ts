@@ -5,7 +5,12 @@ import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { MainComponent } from './main/main.component';
+import { AceModule } from 'ngx-ace-wrapper';
+import { ACE_CONFIG } from 'ngx-ace-wrapper';
+import { AceConfigInterface } from 'ngx-ace-wrapper';
 
+const DEFAULT_ACE_CONFIG: AceConfigInterface = {
+};
 const ROUTES = [
   {
     path: 'main',
@@ -27,8 +32,14 @@ const ROUTES = [
     BrowserModule,
     FormsModule,
     RouterModule.forRoot(ROUTES),
+    AceModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: ACE_CONFIG,
+      useValue: DEFAULT_ACE_CONFIG
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
