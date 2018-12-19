@@ -2,7 +2,7 @@
   "name": "Classic Cards",
   "date": "2018-12-17",
   "print": {
-    "dpi": 600
+    "dpi": 300
   },
   "decks": [{
     "name": "Hearts suit",
@@ -14,7 +14,8 @@
       "content": {
         "text": "=symbol",
         "position": 4,
-        "font": "30px Arial",
+        "fontSize": 9,
+        "fontFamily": "Arial",
         "color": "red"
       },
       "position": {
@@ -23,35 +24,28 @@
         "width": 6,
         "height": 10,
         "opacity": 1,
-        "rotate": 0
+        "rotate": 2
       },
-      "border": {
-        "style": "solid",
-        "size": 1,
-        "color": "red"
-      },
+      "border": null,
       "condition": null
     }, {
       "type": 0,
       "content": {
         "text": "=symbol",
         "position": 4,
-        "font": "30px Arial",
+        "fontSize": 9,
+        "fontFamily": "Arial",
         "color": "red"
       },
       "position": {
-        "left": 54,
-        "top": 75,
+        "left": 55,
+        "top": 76,
         "width": 6,
         "height": 10,
         "opacity": 1,
         "rotate": 180
       },
-      "border": {
-        "style": "solid",
-        "size": 1,
-        "color": "red"
-      },
+      "border": null,
       "condition": null
     }, {
       "type": 1,
@@ -61,8 +55,8 @@
       },
       "position": {
         "left": 2,
-        "top": 15,
-        "width": 5,
+        "top": 14,
+        "width": 6,
         "height": 6,
         "opacity": 1,
         "rotate": 0
@@ -77,8 +71,8 @@
       },
       "position": {
         "left": 55,
-        "top": 67,
-        "width": 5,
+        "top": 69,
+        "width": 6,
         "height": 6,
         "opacity": 1,
         "rotate": 0

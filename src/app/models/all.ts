@@ -38,7 +38,8 @@ export enum ElemType {
 export interface ContentText {
     text: string;
     position: ContentPosition;
-    font: string;
+    fontSize: number;
+    fontFamily: string;
     color: string;
 }
 
