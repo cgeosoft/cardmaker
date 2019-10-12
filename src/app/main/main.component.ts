@@ -1,14 +1,14 @@
-import { Project, Deck, Elem, ElemType, ContentText } from './../models/all';
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-
-import * as pdfMake from 'pdfmake/build/pdfmake.js';
-import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
-import * as projectJson from '../../data/classic-cards.json';
-import { AceConfigInterface } from 'ngx-ace-wrapper';
-
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import 'brace';
 import 'brace/mode/json';
 import 'brace/theme/twilight';
+import { AceConfigInterface } from 'ngx-ace-wrapper';
+import * as pdfMake from 'pdfmake/build/pdfmake.js';
+import * as pdfFonts from 'pdfmake/build/vfs_fonts.js';
+import * as projectJson from '../../data/classic-cards.json';
+import { ContentText, Deck, Elem, ElemType, Project } from './../models/all';
+
+
 // import { heartImg } from 'src/data/heart';
 
 // tslint:disable-next-line:max-line-length
@@ -24,8 +24,8 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 })
 export class MainComponent implements OnInit {
 
-  @ViewChild('canvas') canvasRef: ElementRef;
-  @ViewChild('pdfv') pdfv: ElementRef;
+  @ViewChild('canvas', {static: false}) canvasRef: ElementRef;
+  @ViewChild('pdfv', {static: false}) pdfv: ElementRef;
 
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
@@ -69,7 +69,7 @@ export class MainComponent implements OnInit {
         });
         break;
       case 'DATASET':
-        this.dataStr = JSON.stringify(this.deck.data, ' ', 2);
+        this.dataStr = JSON.stringify(this.deck.data, null, 2);
         break;
       case 'PDF':
         this.enableDpr = false;
