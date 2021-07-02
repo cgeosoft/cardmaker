@@ -1,100 +1,20 @@
-<ng-container *ngIf="deck">
-
-  <div class="wrapper d-flex flex-column">
-
-    <div class="d-flex align-item-center justify-content-center p-2 border-bottom" style="min-height: 60px;">
-      <div class="btn-group btn-sm">
-        <button type="button" class="btn btn-outline-secondary" [ngClass]="{active:activeView==='TEMPLATE'}" (click)="selectView('TEMPLATE')">Template</button>
-        <button type="button" class="btn btn-outline-secondary" [ngClass]="{active:activeView==='DATASET'}" (click)="selectView('DATASET')">Dataset</button>
-        <button type="button" class="btn btn-outline-secondary" [ngClass]="{active:activeView==='PDF'}" (click)="selectView('PDF')">PDF</button>
-      </div>
+<div class="d-flex bg-dark h-100">
+  <div style="width:300px;min-width:300px;" class="d-flex flex-column m-4 p-4 bg-light rounded">
+    <div class="d-flex border-bottom pb-2 mb-2">
+      <select class="form-control form-control-sm" [(ngModel)]="deck">
+        <option *ngFor="let d of project.decks" [value]="d">
+          {{d.name}}
+        </option>
+      </select>
+      <button class="btn btn-outline-success btn-sm ml-2">+</button>
     </div>
-
-    <ng-container *ngIf="activeView==='TEMPLATE'">
-      <div class="d-flex w-100 h-100">
-        <div style="width:300px;min-width:300px;">
-          <div class="p-3">
-            <div class="row">
-              <div class="col-6">
-                <div class="form-group">
-                  <label>Width</label>
-                  <div class="input-group input-group-sm">
-                    <input type="text" class="form-control form-control-sm" [(ngModel)]="deck.width" (keyup)="previewCard()">
-                    <div class="input-group-append">
-                      <span class="input-group-text">mm</span>
-                    </div>
-                  </div>
-                  <small class="form-text text-muted">{{(deck.width * 0.0393701).toFixed(2)}}"</small>
-                </div>
-              </div>
-              <div class="col-6">
-                <div class="form-group">
-                  <label>Height</label>
-                  <div class="input-group input-group-sm">
-                    <input type="text" class="form-control form-control-sm" [(ngModel)]="deck.height" (keyup)="previewCard()">
-                    <div class="input-group-append">
-                      <span class="input-group-text">mm</span>
-                    </div>
-                  </div>
-                  <small class="form-text text-muted">{{(deck.height * 0.0393701).toFixed(2)}}"</small>
-
-                </div>
-              </div>
-            </div>
-            <div class="form-check">
-              <label class="form-check-label">
-                <input type="checkbox" class="form-check-input" [(ngModel)]="showSafeBox" (keyup)="previewCard()">
-                Show safe-box
-              </label>
-            </div>
-            <div class="form-group">
-              <label for="">DPI</label>
-              <input type="text" class="form-control form-control-sm" [(ngModel)]="project.print.dpi" (keyup)="previewCard()">
-              <small class="form-text text-muted">PDF Default is : 72</small>
-            </div>
-            <div class="form-group">
-              <label for="">Background</label>
-              <input type="color" class="form-control form-control-sm" [(ngModel)]="deck.background" (change)="previewCard()">
-            </div>
-            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAS3SURBVHhe7ZpbaBxVGMfXeqlV1IoXEERBK4JKEzNzzm5CYJwzs3WrL76kD74WH8Ra9MHXBKkogoJSFIQ+FMTLg33wzbsg8UEEseCLJYipleJWk92dmY1a3fH/bT4lJGeyO7uz2ZlxfvCHZHfP933/c5nLmSkVFBQUFBTEp1Pdf3XDMYWn5FO+I970lfzEd+SXniM+xGdv4P/Dnirv79T27eYmsenUartXq2IycMTj0Ank+chDDsT+GDlOItfRwC4bnUplDzcZPQ176k4U8JqvxC+eEn/BdKgTCu3Q9yh0Gb9fWHGN2zhET5pu+S6YexE6t10OUjeHI37C3y+17enbOUTytCzjxsCVx5BsbXMRfcproSMoDofcQmt28qbAkc8hR1vTvqe6tSk5v2pN7OWQwxOWSpes2VJhJL/XJR1AS55juhSXU1COXYGSjyDHWc3vY2l95slvaHly+OFAIBdrb0WXbFBhpFqYDYepE8K5uUvx2TPIMdCoRwpLtGmbM2xjMHw1NYXCPG2C4fXn+oFSHkGOi5rvExDVbt7PduLhPzh1C0bqR33gxPQHS/ddUvqu6Ygb2FZ/hJZ1GUbnXU2wzImOCfDyarhQ2sX2etNQRhVTc9Qjs5PyfFtOsL3todGH+Q80QbItJd/aeOaJJLDkrWiwuiVA1qVk/deavJZtRuO54pA2QB70gHyYbUbTcsRxbeNcSLzCNqPBDxe3NsyHcFpfZJvR4IdLmxvmSEtsMxqcN89rGuZC5I1tRoOj5bKucR6E0/sy24wG6+RbXeM8iLyxzWgwA07pGudBmAGn2GY0WCdP6xrnQeiAJ9hmNG1HTOOHf+sCZFndrTNb3Ms2owmtib1YK7THpg2UVaEDztB9DtuMhm4Y0AEndEGyLHTA82yxN7gdluiEZLeoxiqx0nDMO9heb2jzwFfibX2wDErJl/u6Fd6IVzXvw8EwB5siMUd/I55jvqAPmh1hKT/LduJztlLZgx48rQucBdGVH3lgO4PRcIWJpeDrEqRaSjZ+t8272cbg8FObY93dVV2iFIou5DD6R9nC8NATXpxH39MlS5t4oF7/vJ+LnjjQwwUE/npjsjQKI//Fimtcx2Uni1edvhlrK6mHpMkLtVGNXO5ooJcecJH0m7aAMYp2expWZR+XOVp8Wx5A0tQ8OyDzQVKPw/sF1wc1zISmrqAdVr3tlme5rJ2lOxPGeY2A3PSyBZczHnxlHhxLJ2D2tV3T4jLGB+8fPIpOaGgLHYGw5i/4dvkhLiEd4OrLRnH1zcUmLXT2ucCVFU6bLvwDcoLezdEVnpDqflVMcrp00t1HwChpih9KuBT/gd4f5DTphkYJM+GMzsgAwrW9OJ0Z8/9Cb4ai+K82mYktHFsW6YUtDpstwtnZ61uO+FRnrB+h7Wex3/BKGxdmZq7Baet9ncEo0S0tzL8TWtaVHCbb/GwYV2Eqn8RxYdsXn0k4gF7Emj8ezt1zBTfPB2Sopcz5dYMR5tFBLSXnQ8O4nJvliwXaXnPEk5gNmu12sYbPj8R6oTGL0B6j74rHcOn8XyfAeADNxX54kVW69w+uOATTdP9Q91X5IH/1/6JZLZd3fCOjoKCgoKCAKZX+AU+wKmeqEtVNAAAAAElFTkSuQmCC"
-              alt="">
-          </div>
-        </div>
-        <div class="d-flex flex-column w-100 bg-dark align-items-center">
-          <div class="d-flex align-items-center justify-content-center w-100 flex-grow-1 text-truncate">
-            <canvas #canvas class="bg-light shadow rounded border border-white" style="transition: all .7s ease"></canvas>
-          </div>
-          <div class="m-2 d-flex">
-            <div class="form-group mx-1 my-0">
-              <select class="form-control form-control-sm bg-dark text-secondary" [(ngModel)]="side" (change)="previewCard()">
-                <option value="front">Front</option>
-                <option value="back">Back</option>
-              </select>
-            </div>
-            <div class="form-group mx-1 my-0">
-              <select class="form-control form-control-sm bg-dark text-secondary" [(ngModel)]="zoom" (change)="previewCard()">
-                <option *ngFor="let zoomOption of zoomList" [value]="zoomOption">Zoom {{zoomOption}}%</option>
-              </select>
-            </div>
-            <div class="form-group mx-1 my-0">
-              <select class="form-control form-control-sm bg-dark text-secondary" [(ngModel)]="previewIndex" (change)="previewCard()">
-                <option *ngFor="let dataItem of deck.data; let i = index" [value]="i">Preview #{{i+1}}</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      </div>
-    </ng-container>
-
-    <ng-container *ngIf="activeView==='DATASET'">
-      <ace fxFlex="auto" [config]="aceConfig" (valueChange)="parseData()" [(value)]="dataStr">
-      </ace>
-    </ng-container>
-
-
-    <ng-container *ngIf="activeView==='PDF'">
-      <iframe #pdfv src="" frameborder="0" class="bg-light w-100 h-100" style="height:500px"></iframe>
+    <ng-container *ngIf="deck">
+      <app-sidebar class="h-100" [(deck)]="deck" [printParams]="project.print"></app-sidebar>
     </ng-container>
   </div>
-
-</ng-container>
+  <div class="d-flex flex-column my-4 mr-4 w-100">
+    <ng-container *ngIf="deck">
+      <app-preview class="h-100" [deck]="deck" [printParams]="project.print"></app-preview>
+    </ng-container>
+  </div>
+</div>

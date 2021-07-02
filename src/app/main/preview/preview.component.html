@@ -1,0 +1,23 @@
+<div class="btn-toolbar d-flex justify-content-center mb-4">
+  <div class="form-group mx-1 my-0">
+    <select class="form-control form-control-sm bg-dark text-secondary" (change)="side = $event.target.value">
+      <option value="front">Front</option>
+      <option value="back">Back</option>
+    </select>
+  </div>
+  <div class="form-group mx-1 my-0">
+    <select class="form-control form-control-sm bg-dark text-secondary" (change)="zoom = $event.target.value">
+      <option *ngFor="let z of zooms" [value]="z">Zoom {{z}}%</option>
+    </select>
+  </div>
+  <div class="form-group mx-1 my-0">
+    <select class="form-control form-control-sm bg-dark text-secondary" (change)="index = $event.target.value">
+      <option *ngFor="let item of deck.data;let i = index" [value]="item">Preview #{{i+1}}</option>
+    </select>
+  </div>
+</div>
+
+<div class="d-flex justify-content-center align-items-center h-100">
+  <canvas #canvas class="bg-light shadow rounded border border-white mx-auto my-auto"
+    style="transition: all .7s ease"></canvas>
+</div>
